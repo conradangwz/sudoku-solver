@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern char POSSIBLE; /* 9 bits set to 1, representing all possible numbers (1-9) */
+extern int UNSOLVED; /* 9 bits set to 1, representing all possible numbers (1-9) */
 extern int SIZE_ROWS; /* 9 bits set to 0, representing no possible numbers */
 extern int SIZE_COLUMNS; /* 9 bits set to 0, representing no possible numbers */
 
@@ -15,7 +15,8 @@ typedef struct Box {
 
 typedef struct Square {
     int number;
-    char code;
+    int possible[9];
+    int solvable;
     Box * box;
     int row;
     int column;
@@ -23,7 +24,11 @@ typedef struct Square {
 
 
 int ** createPuzzle();
-void printPuzzle(int ** puzzle);
+void printPuzzle(Square *** puzzle);
 Square *** setUpPuzzle(int ** puzzle);
+
+int solveSquare(Square * square);
+int checkPuzzle(Square *** sudoku);
+int updateSudoku(Square *** sudoku, int row, int column);
 
 #endif /* SUDOKU_H */

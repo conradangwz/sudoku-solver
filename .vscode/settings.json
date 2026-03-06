@@ -1,0 +1,9 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "c:\\Users\\GGPC\\OneDrive\\Documents\\Work Related\\Other\\Sudoku solver\\sudoku-solver",
+            "binaryPath": "c:\\Users\\GGPC\\OneDrive\\Documents\\Work Related\\Other\\Sudoku solver\\sudoku-solver\\sudoku",
+            "binaryArgs": []
+        }
+    ]
+}

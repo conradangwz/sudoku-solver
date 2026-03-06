@@ -2,31 +2,88 @@
 
 Square *** setUpPuzzle(int ** puzzle) {
     Square *** sudoku;
-    int i, j;
+    int i, j, x;
         
     sudoku = (Square ***)malloc(sizeof(Square **) * 9);
     
     /*Loop through rows */
     for (i = 0; i < SIZE_ROWS; i++) {
+        /* Allocate memory for each row */
         sudoku[i] = (Square **)malloc(sizeof(Square *) * 9);
         /* Loop through columns */
         for (j = 0; j < SIZE_COLUMNS; j++) {
+
+            /* Allocate memory for each square */
             sudoku[i][j] = (Square *)malloc(sizeof(Square));
+
+            /* Initialize the square's number */
             sudoku[i][j]->number = puzzle[i][j];
+
+            /* Initialize row and column numbers */
             sudoku[i][j]->row = i;
             sudoku[i][j]->column = j;
+            sudoku[i][j]->solvable = 9;
 
-            if (sudoku[i][j]->number != 0) {
-                sudoku[i][j]->code = POSSIBLE; /* All numbers are possible if the square is empty */
-            } else {
-                sudoku[i][j]->code = 0x0; /* No numbers are possible if the square is filled */
+            for (x = 0; x < SIZE_ROWS; x++) {
+                sudoku[i][j]->possible[x] = 0;
             }
         }
     }
 
-    
+        /*Loop through rows */
+    for (i = 0; i < SIZE_ROWS; i++) {
+
+        /* Loop through columns */
+        for (j = 0; j < SIZE_COLUMNS; j++) {
+
+            if (sudoku[i][j]->number != 0) {
+                sudoku[i][j]->solvable = 0;
+                updateSudoku(sudoku, i,j);
+                UNSOLVED--;
+            } 
+        }
+    }
 
     return sudoku;
+}
+
+int updateSudoku(Square *** sudoku, int row, int column) {
+    int x;
+    int number = sudoku[row][column]->number;
+
+    for (x = 0; x < SIZE_ROWS; x++) {
+        if (sudoku[x][column]->possible[number] == 0) {
+            sudoku[x][column]->solvable--;
+        }
+        sudoku[x][column]->possible[number - 1] = 1;
+    }
+
+        for (x = 0; x < SIZE_COLUMNS; x++) {
+        if (sudoku[row][x]->possible[number] == 0) {
+            sudoku[row][x]->solvable--;
+        }
+        sudoku[row][x]->possible[number - 1] = 1;
+    }
+
+    return 1;
+}
+
+int checkPuzzle(Square *** sudoku) {
+    int i, j, x;
+
+    for (i = 0; i < SIZE_ROWS; i++) {
+        for (j = 0; j < SIZE_COLUMNS; j++) {
+            if (sudoku[i][j]->solvable == 1) {
+                for (x = 0; x < SIZE_ROWS; x++) {
+                    if (sudoku[i][j]->possible[x] == 0) {
+                        solveSquare(sudoku[i][j]);
+                        updateSudoku(sudoku, i, j);
+                    }
+                }
+            }
+        }
+    }
+    return 1;
 }
 
 int ** createPuzzle() {
@@ -55,7 +112,7 @@ int ** createPuzzle() {
     return puzzle;
 }
 
-void printPuzzle(int ** puzzle) {
+void printPuzzle(Square *** puzzle) {
     int i, j;
 
     printf("-------------------------\n");
@@ -63,7 +120,7 @@ void printPuzzle(int ** puzzle) {
         printf("| ");
         /* Print each row */
         for (j = 0; j < SIZE_COLUMNS; j++) {
-            printf("%d ", puzzle[i][j]);
+            printf("%d ", puzzle[i][j]->number);
             if ((j+1) % 3 == 0) {
                 printf("| ");
             }
