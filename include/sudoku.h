@@ -49,4 +49,6 @@ Box ** createBoxes();
 int updateBoxes(Square *** sudoku, int row, int column);
 int boxSingles(Square ***sudoku, Box **boxes);
 
+/*check row */
+int checkRows(Square *** sudoku, Box ** boxes);
 #endif /* SUDOKU_H */
